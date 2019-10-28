@@ -8,7 +8,7 @@ Summary:	Library and tools for interacting with the Linux GPIO character device
 Summary(pl.UTF-8):	Biblioteka i narzędzia do obsługi linuksowych urządzeń znakowych GPIO
 Name:		libgpiod
 Version:	1.4.1
-Release:	1
+Release:	2
 License:	LGPL v2.1+
 Group:		Libraries
 Source0:	https://www.kernel.org/pub/software/libs/libgpiod/%{name}-%{version}.tar.xz
