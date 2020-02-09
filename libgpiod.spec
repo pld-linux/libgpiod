@@ -1,3 +1,4 @@
+# TODO: tests (BR: kmod-devel >= 18, udev-devel >= 1:215, glib2-devel >= 1:2.50 for library; bats for tools; catch2 for C++)
 #
 # Conditional build:
 %bcond_without	apidocs		# Doxygen API documentation
@@ -7,16 +8,16 @@
 Summary:	Library and tools for interacting with the Linux GPIO character device
 Summary(pl.UTF-8):	Biblioteka i narzędzia do obsługi linuksowych urządzeń znakowych GPIO
 Name:		libgpiod
-Version:	1.4.1
-Release:	2
+Version:	1.5
+Release:	1
 License:	LGPL v2.1+
 Group:		Libraries
 Source0:	https://www.kernel.org/pub/software/libs/libgpiod/%{name}-%{version}.tar.xz
-# Source0-md5:	585b4bb431f99c4ba9b3ee58b9d494c1
+# Source0-md5:	dbcebfe6ff29ef4db33ed87ff7ff6d65
 URL:		https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/
 %{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	libstdc++-devel >= 6:4.7
-BuildRequires:	linux-libc-headers >= 6:4.8
+BuildRequires:	linux-libc-headers >= 6:5.5
 %{?with_python:BuildRequires:	python3-devel >= 1:3.2}
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
