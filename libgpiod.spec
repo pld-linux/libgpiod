@@ -1,4 +1,6 @@
-# TODO: tests (BR: kmod-devel >= 18, udev-devel >= 1:215, glib2-devel >= 1:2.50 for library; bats for tools; catch2 for C++)
+# TODO:
+# - rust bindings (--enable-bindings-rust, needs vendoring; BR: cargo, rust)
+# - tests (BR: kmod-devel >= 18, libmount-devel >= 2.33.1, glib2-devel >= 1:2.50 for library; bats for tools; catch2 for C++)
 #
 # Conditional build:
 %bcond_without	apidocs		# Doxygen API documentation
@@ -8,16 +10,17 @@
 Summary:	Library and tools for interacting with the Linux GPIO character device
 Summary(pl.UTF-8):	Biblioteka i narzędzia do obsługi linuksowych urządzeń znakowych GPIO
 Name:		libgpiod
-Version:	1.6.4
+Version:	2.0
 Release:	1
 License:	LGPL v2.1+
 Group:		Libraries
 Source0:	https://www.kernel.org/pub/software/libs/libgpiod/%{name}-%{version}.tar.xz
-# Source0-md5:	7a2cca6ead9296c27e877070dd8853bc
+# Source0-md5:	5ee9ddc16c21c62dabbf83986c6709e2
+Patch0:		%{name}-python.patch
 URL:		https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/
 %{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	help2man
-BuildRequires:	libstdc++-devel >= 6:4.7
+BuildRequires:	libstdc++-devel >= 6:7
 BuildRequires:	linux-libc-headers >= 6:5.5
 %{?with_python:BuildRequires:	python3-devel >= 1:3.2}
 BuildRequires:	tar >= 1:1.22
@@ -78,7 +81,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libgpiodcxx
 Group:		Development/Libraries
 Requires:	%{name}-cxx = %{version}-%{release}
 Requires:	%{name}-devel = %{version}-%{release}
-Requires:	libstdc++-devel >= 6:4.7
+Requires:	libstdc++-devel >= 6:7
 
 %description cxx-devel
 Header files for libgpiodcxx library.
@@ -125,12 +128,14 @@ Dokumentacja API biblioteki libgpiod.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %configure \
 	%{!?with_static_libs:--disable-static} \
 	--enable-bindings-cxx \
 	%{?with_python:--enable-bindings-python} \
+	--enable-gpioset-interactive \
 	--disable-silent-rules \
 	--enable-tools
 %{__make}
@@ -147,10 +152,6 @@ rm -rf $RPM_BUILD_ROOT
 
 # obsoleted by pkg-config
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libgpiod*.la
-%if %{with python}
-%{__rm} $RPM_BUILD_ROOT%{py3_sitedir}/gpiod.la \
-	%{?with_static_libs:$RPM_BUILD_ROOT%{py3_sitedir}/gpiod.a}
-%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -165,18 +166,18 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc NEWS README
 %attr(755,root,root) %{_bindir}/gpiodetect
-%attr(755,root,root) %{_bindir}/gpiofind
 %attr(755,root,root) %{_bindir}/gpioget
 %attr(755,root,root) %{_bindir}/gpioinfo
 %attr(755,root,root) %{_bindir}/gpiomon
+%attr(755,root,root) %{_bindir}/gpionotify
 %attr(755,root,root) %{_bindir}/gpioset
 %attr(755,root,root) %{_libdir}/libgpiod.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgpiod.so.2
+%attr(755,root,root) %ghost %{_libdir}/libgpiod.so.3
 %{_mandir}/man1/gpiodetect.1*
-%{_mandir}/man1/gpiofind.1*
 %{_mandir}/man1/gpioget.1*
 %{_mandir}/man1/gpioinfo.1*
 %{_mandir}/man1/gpiomon.1*
+%{_mandir}/man1/gpionotify.1*
 %{_mandir}/man1/gpioset.1*
 
 %files devel
@@ -194,12 +195,13 @@ rm -rf $RPM_BUILD_ROOT
 %files cxx
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgpiodcxx.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgpiodcxx.so.1
+%attr(755,root,root) %ghost %{_libdir}/libgpiodcxx.so.2
 
 %files cxx-devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libgpiodcxx.so
 %{_includedir}/gpiod.hpp
+%{_includedir}/gpiodcxx
 %{_pkgconfigdir}/libgpiodcxx.pc
 
 %if %{with static_libs}
@@ -211,7 +213,11 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with python}
 %files -n python3-gpiod
 %defattr(644,root,root,755)
-%attr(755,root,root) %{py3_sitedir}/gpiod.so
+%dir %{py3_sitedir}/gpiod
+%attr(755,root,root) %{py3_sitedir}/gpiod/_ext.cpython-*.so
+%{py3_sitedir}/gpiod/*.py
+%{py3_sitedir}/gpiod/__pycache__
+%{py3_sitedir}/gpiod-2.0.0-py*.egg-info
 %endif
 
 %if %{with apidocs}
