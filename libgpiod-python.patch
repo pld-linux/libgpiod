@@ -1,17 +1,11 @@
---- libgpiod-2.0/bindings/python/Makefile.am.orig	2023-03-02 15:37:46.000000000 +0100
-+++ libgpiod-2.0/bindings/python/Makefile.am	2023-03-30 20:16:19.674654682 +0200
-@@ -11,12 +11,12 @@ endif
- 
- all-local:
- 	GPIOD_WITH_TESTS=$(BUILD_TESTS) \
--	$(PYTHON) $(srcdir)/setup.py build_ext --inplace \
-+	$(PYTHON) $(srcdir)/setup.py build_ext --inplace \
- 		--include-dirs=$(top_srcdir)/include/:$(top_srcdir)/tests/gpiosim/ \
- 		--library-dirs=$(top_builddir)/lib/.libs/:$(top_srcdir)/tests/gpiosim/.libs/
+--- libgpiod-2.1/bindings/python/Makefile.am.orig	2023-11-12 19:57:20.387550810 +0100
++++ libgpiod-2.1/bindings/python/Makefile.am	2023-11-12 20:16:15.008070710 +0100
+@@ -19,7 +19,7 @@ all-local:
  
  install-exec-local:
--	$(PYTHON) $(srcdir)/setup.py install --prefix=$(DESTDIR)$(prefix)
-+	$(PYTHON) $(srcdir)/setup.py install --root=$(DESTDIR) --prefix=$(prefix)
+ 	GPIOD_WITH_TESTS= \
+-	$(PYTHON) setup.py install --prefix=$(DESTDIR)$(prefix)
++	$(PYTHON) setup.py install --root=$(DESTDIR) --prefix=$(prefix)
  
  SUBDIRS = gpiod
  
