@@ -20,9 +20,11 @@ Patch0:		%{name}-python.patch
 URL:		https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/
 %{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	help2man
+BuildRequires:	libedit-devel >= 3.1
 BuildRequires:	libstdc++-devel >= 6:7
-BuildRequires:	linux-libc-headers >= 6:5.5
-%{?with_python:BuildRequires:	python3-devel >= 1:3.2}
+BuildRequires:	linux-libc-headers >= 7:5.5
+BuildRequires:	pkgconfig
+%{?with_python:BuildRequires:	python3-devel >= 1:3.9}
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
