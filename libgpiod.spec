@@ -7,8 +7,8 @@
 %bcond_without	python		# Python binding
 %bcond_without	static_libs	# static libraries
 #
-Summary:	Library and tools for interacting with the Linux GPIO character device
-Summary(pl.UTF-8):	Biblioteka i narzędzia do obsługi linuksowych urządzeń znakowych GPIO
+Summary:	Library for interacting with the Linux GPIO character device
+Summary(pl.UTF-8):	Biblioteka do obsługi linuksowych urządzeń znakowych GPIO
 Name:		libgpiod
 Version:	2.1
 Release:	1
@@ -103,6 +103,18 @@ Static libgpiodcxx library.
 %description cxx-static -l pl.UTF-8
 Statyczna biblioteka libgpiodcxx.
 
+%package tools
+Summary:	Tools for interacting with the Linux GPIO character device
+Summary(pl.UTF-8):	Narzędzia do obsługi linuksowych urządzeń znakowych GPIO
+Group:		Application/System
+Requires:	%{name} = %{version}-%{release}
+
+%description tools
+Tools for interacting with the Linux GPIO character device.
+
+%description tools -l pl.UTF-8
+Narzędzia do obsługi linuksowych urządzeń znakowych GPIO.
+
 %package -n python3-gpiod
 Summary:	Pythona binding for libgpiod library
 Summary(pl.UTF-8):	Interfejs Pythona do biblioteki libgpiod
@@ -167,20 +179,8 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc NEWS README
-%attr(755,root,root) %{_bindir}/gpiodetect
-%attr(755,root,root) %{_bindir}/gpioget
-%attr(755,root,root) %{_bindir}/gpioinfo
-%attr(755,root,root) %{_bindir}/gpiomon
-%attr(755,root,root) %{_bindir}/gpionotify
-%attr(755,root,root) %{_bindir}/gpioset
 %attr(755,root,root) %{_libdir}/libgpiod.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgpiod.so.3
-%{_mandir}/man1/gpiodetect.1*
-%{_mandir}/man1/gpioget.1*
-%{_mandir}/man1/gpioinfo.1*
-%{_mandir}/man1/gpiomon.1*
-%{_mandir}/man1/gpionotify.1*
-%{_mandir}/man1/gpioset.1*
 
 %files devel
 %defattr(644,root,root,755)
@@ -211,6 +211,21 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_libdir}/libgpiodcxx.a
 %endif
+
+%files tools
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/gpiodetect
+%attr(755,root,root) %{_bindir}/gpioget
+%attr(755,root,root) %{_bindir}/gpioinfo
+%attr(755,root,root) %{_bindir}/gpiomon
+%attr(755,root,root) %{_bindir}/gpionotify
+%attr(755,root,root) %{_bindir}/gpioset
+%{_mandir}/man1/gpiodetect.1*
+%{_mandir}/man1/gpioget.1*
+%{_mandir}/man1/gpioinfo.1*
+%{_mandir}/man1/gpiomon.1*
+%{_mandir}/man1/gpionotify.1*
+%{_mandir}/man1/gpioset.1*
 
 %if %{with python}
 %files -n python3-gpiod
