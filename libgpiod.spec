@@ -18,10 +18,14 @@ Source0:	https://www.kernel.org/pub/software/libs/libgpiod/%{name}-%{version}.ta
 # Source0-md5:	42e576d44c261411c9e58bba8a87e7f5
 Patch0:		%{name}-python.patch
 URL:		https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/
+BuildRequires:	autoconf >= 2.69
+BuildRequires:	autoconf-archive
+BuildRequires:	automake
 %{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	help2man
 BuildRequires:	libedit-devel >= 3.1
 BuildRequires:	libstdc++-devel >= 6:7
+BuildRequires:	libtool
 BuildRequires:	linux-libc-headers >= 7:5.5
 BuildRequires:	pkgconfig
 %{?with_python:BuildRequires:	python3-devel >= 1:3.9}
@@ -145,6 +149,11 @@ Dokumentacja API biblioteki libgpiod.
 %patch0 -p1
 
 %build
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__autoheader}
+%{__automake}
 %configure \
 	%{!?with_static_libs:--disable-static} \
 	--enable-bindings-cxx \
