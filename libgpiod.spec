@@ -34,6 +34,7 @@ BuildRequires:	python3-devel >= 1:3.9
 BuildRequires:	python3-modules >= 1:3.9
 BuildRequires:	python3-setuptools
 %endif
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
