@@ -10,12 +10,12 @@
 Summary:	Library for interacting with the Linux GPIO character device
 Summary(pl.UTF-8):	Biblioteka do obsługi linuksowych urządzeń znakowych GPIO
 Name:		libgpiod
-Version:	2.1.2
+Version:	2.1.3
 Release:	1
 License:	LGPL v2.1+
 Group:		Libraries
 Source0:	https://www.kernel.org/pub/software/libs/libgpiod/%{name}-%{version}.tar.xz
-# Source0-md5:	4792887c2573ce36836bd83899fb17d6
+# Source0-md5:	044a2724c408221c8798d0e197133c21
 URL:		https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/
 BuildRequires:	autoconf >= 2.69
 BuildRequires:	autoconf-archive
