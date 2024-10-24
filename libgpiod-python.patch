@@ -1,0 +1,17 @@
+--- libgpiod-2.2/bindings/python/Makefile.am.orig	2024-10-14 16:45:16.000000000 +0200
++++ libgpiod-2.2/bindings/python/Makefile.am	2024-10-23 21:28:43.227455657 +0200
+@@ -36,11 +36,11 @@ clean-local:
+ all-local: python-tests
+ 	CFLAGS="-I$(abs_top_srcdir)/include/ -I$(abs_top_srcdir)/tests/gpiosim \
+ 	-L$(abs_top_builddir)/lib/.libs/ -L$(abs_top_builddir)/tests/gpiosim/.libs/" \
+-	$(PYTHON) -m build
++	$(PYTHON) setup.py build
+ 
+ install-exec-local:
+-	$(PYTHON) -m pip install dist/*.whl \
+-	--ignore-installed --prefix=$(prefix) --root=$(if $(DESTDIR),$(DESTDIR),/)
++	$(PYTHON) setup.py install --skip-build --optimize=2 \
++	--prefix=$(prefix) --root=$(if $(DESTDIR),$(DESTDIR),/)
+ 
+ SUBDIRS = gpiod
+ 

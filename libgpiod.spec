@@ -1,4 +1,5 @@
 # TODO:
+# - glib, dbus, systemd
 # - rust bindings (--enable-bindings-rust, needs vendoring; BR: cargo, rust)
 # - tests (BR: kmod-devel >= 18, libmount-devel >= 2.33.1, glib2-devel >= 1:2.50 for library; bats for tools; catch2 for C++)
 #
@@ -10,21 +11,22 @@
 Summary:	Library for interacting with the Linux GPIO character device
 Summary(pl.UTF-8):	Biblioteka do obsługi linuksowych urządzeń znakowych GPIO
 Name:		libgpiod
-Version:	2.1.3
+Version:	2.2
 Release:	1
 License:	LGPL v2.1+
 Group:		Libraries
 Source0:	https://www.kernel.org/pub/software/libs/libgpiod/%{name}-%{version}.tar.xz
-# Source0-md5:	044a2724c408221c8798d0e197133c21
+# Source0-md5:	1d3a1d1cd81908564579e1aaba9aea52
+Patch0:		%{name}-python.patch
 URL:		https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/
-BuildRequires:	autoconf >= 2.69
+BuildRequires:	autoconf >= 2.71
 BuildRequires:	autoconf-archive
 BuildRequires:	automake
 %{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	help2man
 BuildRequires:	libedit-devel >= 3.1
 BuildRequires:	libstdc++-devel >= 6:7
-BuildRequires:	libtool
+BuildRequires:	libtool >= 2:2
 BuildRequires:	linux-libc-headers >= 7:5.5
 BuildRequires:	pkgconfig
 %if %{with python}
@@ -151,6 +153,7 @@ Dokumentacja API biblioteki libgpiod.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %{__libtoolize}
@@ -247,7 +250,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{py3_sitedir}/gpiod/_ext.cpython-*.so
 %{py3_sitedir}/gpiod/*.py
 %{py3_sitedir}/gpiod/__pycache__
-%{py3_sitedir}/gpiod-2.0.1-py*.egg-info
+%{py3_sitedir}/gpiod-2.2.0-py*.egg-info
 %endif
 
 %if %{with apidocs}
