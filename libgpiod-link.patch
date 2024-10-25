@@ -1,0 +1,10 @@
+--- libgpiod-2.2/dbus/lib/Makefile.am.orig	2024-10-14 16:45:16.000000000 +0200
++++ libgpiod-2.2/dbus/lib/Makefile.am	2024-10-25 06:20:57.872575165 +0200
+@@ -5,6 +5,7 @@ libgpiodbus_la_CFLAGS = -include $(top_b
+ libgpiodbus_la_CFLAGS += $(GLIB_CFLAGS) $(GIO_CFLAGS)
+ libgpiodbus_la_CFLAGS += -DG_LOG_DOMAIN=\"gpiodbus\"
+ libgpiodbus_la_LDFLAGS = -version-info 1
++libgpiodbus_la_LIBADD = $(GLIB_LIBS) $(GIO_LIBS)
+ 
+ generated-gpiodbus.h generated-gpiodbus.c: io.gpiod1.xml
+ 	$(AM_V_GEN)gdbus-codegen \

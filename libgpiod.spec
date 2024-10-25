@@ -1,5 +1,4 @@
 # TODO:
-# - glib, dbus, systemd
 # - rust bindings (--enable-bindings-rust, needs vendoring; BR: cargo, rust)
 # - tests (BR: kmod-devel >= 18, libmount-devel >= 2.33.1, glib2-devel >= 1:2.50 for library; bats for tools; catch2 for C++)
 #
@@ -18,17 +17,23 @@ Group:		Libraries
 Source0:	https://www.kernel.org/pub/software/libs/libgpiod/%{name}-%{version}.tar.xz
 # Source0-md5:	1d3a1d1cd81908564579e1aaba9aea52
 Patch0:		%{name}-python.patch
+Patch1:		%{name}-link.patch
 URL:		https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/
 BuildRequires:	autoconf >= 2.71
 BuildRequires:	autoconf-archive
 BuildRequires:	automake
 %{?with_apidocs:BuildRequires:	doxygen}
+# docs not installed as of 2.2
+#BuildRequires:	gi-docgen
+BuildRequires:	glib2-devel >= 1:2.80
+BuildRequires:	gobject-introspection-devel >= 0.6.2
 BuildRequires:	help2man
 BuildRequires:	libedit-devel >= 3.1
+BuildRequires:	libgudev-devel >= 230
 BuildRequires:	libstdc++-devel >= 6:7
 BuildRequires:	libtool >= 2:2
 BuildRequires:	linux-libc-headers >= 7:5.5
-BuildRequires:	pkgconfig
+BuildRequires:	pkgconfig >= 1:0.28
 %if %{with python}
 BuildRequires:	python3 >= 1:3.9
 BuildRequires:	python3-devel >= 1:3.9
@@ -36,6 +41,7 @@ BuildRequires:	python3-modules >= 1:3.9
 BuildRequires:	python3-setuptools
 %endif
 BuildRequires:	rpm-build >= 4.6
+BuildRequires:	systemd-devel
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -114,6 +120,83 @@ Static libgpiodcxx library.
 %description cxx-static -l pl.UTF-8
 Statyczna biblioteka libgpiodcxx.
 
+%package glib
+Summary:	GObject bindings for libgpiod library
+Summary(pl.UTF-8):	Interfejs GObject do biblioteki libgpiod
+Group:		Libraries
+Requires:	%{name} = %{version}-%{release}
+Requires:	glib2 >= 1:2.80
+
+%description glib
+GObject bindings for libgpiod library.
+
+%description glib -l pl.UTF-8
+Interfejs GObject do biblioteki libgpiod.
+
+%package glib-devel
+Summary:	Header files for libgpiod-glib library
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libgpiod-glib
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+Requires:	%{name}-glib = %{version}-%{release}
+Requires:	glib2-devel >= 1:2.80
+
+%description glib-devel
+Header files for libgpiod-glib library.
+
+%description glib-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki libgpiod-glib.
+
+%package glib-static
+Summary:	Static libgpiod-glib library
+Summary(pl.UTF-8):	Statyczna biblioteka libgpiod-glib
+Group:		Development/Libraries
+Requires:	%{name}-glib-devel = %{version}-%{release}
+
+%description glib-static
+Static libgpiod-glib library.
+
+%description glib-static -l pl.UTF-8
+Statyczna biblioteka libgpiod-glib.
+
+%package dbus
+Summary:	DBus library and daemon
+Summary(pl.UTF-8):	Biblioteka i demon DBus
+Group:		Libraries
+Requires:	glib2 >= 1:2.80
+Requires:	libgudev >= 230
+
+%description dbus
+DBus library and daemon.
+
+%description dbus -l pl.UTF-8
+Biblioteka i demon DBus.
+
+%package dbus-devel
+Summary:	Header files for gpiodbus library
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki gpiodbus
+Group:		Development/Libraries
+Requires:	%{name}-dbus = %{version}-%{release}
+Requires:	glib2-devel >= 1:2.80
+
+%description dbus-devel
+Header files for gpiodbus library.
+
+%description dbus-devel -l pl.UTF-8
+Pliki nagłówkowe biblioteki gpiodbus.
+
+%package dbus-static
+Summary:	Static gpiodbus library
+Summary(pl.UTF-8):	Statyczna biblioteka gpiodbus
+Group:		Development/Libraries
+Requires:	%{name}-dbus-devel = %{version}-%{release}
+
+%description dbus-static
+Static gpiodbus library.
+
+%description dbus-static -l pl.UTF-8
+Statyczna biblioteka gpiodbus.
+
 %package tools
 Summary:	Tools for interacting with the Linux GPIO character device
 Summary(pl.UTF-8):	Narzędzia do obsługi linuksowych urządzeń znakowych GPIO
@@ -154,6 +237,7 @@ Dokumentacja API biblioteki libgpiod.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__libtoolize}
@@ -164,9 +248,12 @@ Dokumentacja API biblioteki libgpiod.
 %configure \
 	%{!?with_static_libs:--disable-static} \
 	--enable-bindings-cxx \
+	--enable-bindings-glib \
 	%{?with_python:--enable-bindings-python} \
+	--enable-dbus \
 	--enable-gpioset-interactive \
 	--disable-silent-rules \
+	--enable-systemd \
 	--enable-tools
 %{__make}
 
@@ -178,7 +265,8 @@ Dokumentacja API biblioteki libgpiod.
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT \
+	udevdir=/lib/udev/rules.d
 
 # obsoleted by pkg-config
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libgpiod*.la
@@ -191,6 +279,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %post	cxx -p /sbin/ldconfig
 %postun	cxx -p /sbin/ldconfig
+
+%post	glib -p /sbin/ldconfig
+%postun	glib -p /sbin/ldconfig
 
 %files
 %defattr(644,root,root,755)
@@ -257,4 +348,47 @@ rm -rf $RPM_BUILD_ROOT
 %files apidocs
 %defattr(644,root,root,755)
 %doc doc/html/*
+%endif
+
+%files glib
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libgpiod-glib.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgpiod-glib.so.1
+%{_libdir}/girepository-1.0/Gpiodglib-1.0.typelib
+
+%files glib-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libgpiod-glib.so
+%{_includedir}/gpiod-glib
+%{_includedir}/gpiod-glib.h
+%{_datadir}/gir-1.0/Gpiodglib-1.0.gir
+%{_pkgconfigdir}/gpiod-glib.pc
+
+%if %{with static_libs}
+%files glib-static
+%defattr(644,root,root,755)
+%{_libdir}/libgpiod-glib.a
+%endif
+
+%files dbus
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_bindir}/gpio-manager
+%attr(755,root,root) %{_bindir}/gpiocli
+%attr(755,root,root) %{_libdir}/libgpiodbus.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgpiodbus.so.1
+/etc/dbus-1/system.d/io.gpiod1.conf
+/lib/udev/rules.d/90-gpio.rules
+%{_datadir}/dbus-1/interfaces/io.gpiod1.xml
+%{systemdunitdir}/gpio-manager.service
+
+%files dbus-devel
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libgpiodbus.so
+%{_includedir}/generated-gpiodbus.h
+%{_includedir}/gpiodbus.h
+
+%if %{with static_libs}
+%files dbus-static
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/libgpiodbus.a
 %endif
