@@ -10,12 +10,12 @@
 Summary:	Library for interacting with the Linux GPIO character device
 Summary(pl.UTF-8):	Biblioteka do obsługi linuksowych urządzeń znakowych GPIO
 Name:		libgpiod
-Version:	2.2
+Version:	2.2.1
 Release:	1
 License:	LGPL v2.1+
 Group:		Libraries
 Source0:	https://www.kernel.org/pub/software/libs/libgpiod/%{name}-%{version}.tar.xz
-# Source0-md5:	1d3a1d1cd81908564579e1aaba9aea52
+# Source0-md5:	96111292f46e2a646cd9dd8802a0c3a4
 Patch0:		%{name}-python.patch
 Patch1:		%{name}-link.patch
 URL:		https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/
@@ -27,12 +27,13 @@ BuildRequires:	automake
 #BuildRequires:	gi-docgen
 BuildRequires:	glib2-devel >= 1:2.80
 BuildRequires:	gobject-introspection-devel >= 0.6.2
-BuildRequires:	help2man
+%{?with_apidocs:BuildRequires:	help2man}
 BuildRequires:	libedit-devel >= 3.1
 BuildRequires:	libgudev-devel >= 230
 BuildRequires:	libstdc++-devel >= 6:7
 BuildRequires:	libtool >= 2:2
 BuildRequires:	linux-libc-headers >= 7:5.5
+%{?with_apidocs:BuildRequires:	pandoc}
 BuildRequires:	pkgconfig >= 1:0.28
 %if %{with python}
 BuildRequires:	python3 >= 1:3.9
@@ -40,6 +41,7 @@ BuildRequires:	python3-devel >= 1:3.9
 BuildRequires:	python3-modules >= 1:3.9
 BuildRequires:	python3-setuptools
 %endif
+%{?with_apidocs:BuildRequires:	sphinx-pdg}
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	systemd-devel
 BuildRequires:	tar >= 1:1.22
@@ -288,7 +290,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc NEWS README
+%doc NEWS README.md
 %attr(755,root,root) %{_libdir}/libgpiod.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgpiod.so.3
 
@@ -383,6 +385,8 @@ rm -rf $RPM_BUILD_ROOT
 /lib/udev/rules.d/90-gpio.rules
 %{_datadir}/dbus-1/interfaces/io.gpiod1.xml
 %{systemdunitdir}/gpio-manager.service
+%{_mandir}/man1/gpio-manager.1*
+%{_mandir}/man1/gpiocli*.1*
 
 %files dbus-devel
 %defattr(644,root,root,755)
