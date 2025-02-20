@@ -27,7 +27,7 @@ BuildRequires:	automake
 #BuildRequires:	gi-docgen
 BuildRequires:	glib2-devel >= 1:2.80
 BuildRequires:	gobject-introspection-devel >= 0.6.2
-%{?with_apidocs:BuildRequires:	help2man}
+BuildRequires:	help2man
 BuildRequires:	libedit-devel >= 3.1
 BuildRequires:	libgudev-devel >= 230
 BuildRequires:	libstdc++-devel >= 6:7
