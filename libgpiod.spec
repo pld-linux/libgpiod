@@ -280,6 +280,9 @@ rm -rf $RPM_BUILD_ROOT
 %post	cxx -p /sbin/ldconfig
 %postun	cxx -p /sbin/ldconfig
 
+%post	dbus -p /sbin/ldconfig
+%postun	dbus -p /sbin/ldconfig
+
 %post	glib -p /sbin/ldconfig
 %postun	glib -p /sbin/ldconfig
 
