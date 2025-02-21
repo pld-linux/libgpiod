@@ -18,6 +18,7 @@ Source0:	https://www.kernel.org/pub/software/libs/libgpiod/%{name}-%{version}.ta
 # Source0-md5:	96111292f46e2a646cd9dd8802a0c3a4
 Patch0:		%{name}-python.patch
 Patch1:		%{name}-link.patch
+Patch2:		%{name}-docs.patch
 URL:		https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git/
 BuildRequires:	autoconf >= 2.71
 BuildRequires:	autoconf-archive
@@ -240,10 +241,11 @@ Dokumentacja API biblioteki libgpiod.
 %setup -q
 %patch -P0 -p1
 %patch -P1 -p1
+%patch -P2 -p1
 
 %build
 %{__libtoolize}
-%{__aclocal}
+%{__aclocal} -I m4
 %{__autoconf}
 %{__autoheader}
 %{__automake}
@@ -260,7 +262,8 @@ Dokumentacja API biblioteki libgpiod.
 %{__make}
 
 %if %{with apidocs}
-%{__make} doc
+%{__make} docs \
+	SHELL=bash
 %endif
 
 %install
@@ -352,7 +355,7 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with apidocs}
 %files apidocs
 %defattr(644,root,root,755)
-%doc doc/html/*
+%doc docs/doxygen-output/html/*
 %endif
 
 %files glib

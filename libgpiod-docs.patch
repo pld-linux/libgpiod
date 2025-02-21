@@ -1,0 +1,26 @@
+--- libgpiod-2.2.1/docs/conf.py.orig	2025-02-17 09:44:45.000000000 +0100
++++ libgpiod-2.2.1/docs/conf.py	2025-02-21 06:23:14.122156339 +0100
+@@ -82,23 +82,6 @@ def setup(app):
+ 
+ subprocess.run(["doxygen", "Doxyfile"])
+ 
+-cwd = os.getcwd()
+-os.chdir("..")
+-subprocess.run(["autoreconf", "-ifv"], check=True)
+-subprocess.run(
+-    [
+-        "./configure",
+-        "--enable-tools",
+-        "--enable-bindings-glib",
+-        "--enable-introspection",
+-        "--enable-tools",
+-        "--enable-dbus",
+-    ],
+-    check=True,
+-)
+-subprocess.run(["make", "-j"], check=True)
+-os.chdir(cwd)
+-
+ for page in [
+     "gpiodetect",
+     "gpioinfo",
