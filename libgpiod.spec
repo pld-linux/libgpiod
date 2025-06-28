@@ -41,6 +41,7 @@ BuildRequires:	python3 >= 1:3.9
 BuildRequires:	python3-devel >= 1:3.9
 BuildRequires:	python3-modules >= 1:3.9
 BuildRequires:	python3-setuptools
+BuildRequires:	rpm-pythonprov
 %endif
 %{?with_apidocs:BuildRequires:	sphinx-pdg}
 BuildRequires:	rpm-build >= 4.6
